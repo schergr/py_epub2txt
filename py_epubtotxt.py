@@ -27,10 +27,16 @@ def write_processed_files_info(file_path, info):
 
 def pdf2text(pdf_path):
     text = ""
-    with open(pdf_path, 'rb') as file:
-        pdf_reader = PyPDF2.PdfReader(file)
-        for page in pdf_reader.pages:
-            text += page.extract_text() + "\n"
+    try:
+        with open(pdf_path, 'rb') as file:
+            pdf_reader = PyPDF2.PdfReader(file)
+            for page in pdf_reader.pages:
+                try:
+                    text += page.extract_text() + "\n"
+                except Exception as e:
+                    print(f"Error extracting text from page in {pdf_path}: {e}")
+    except Exception as e:
+        print(f"Error reading PDF file {pdf_path}: {e}")
     return text
 
 def epub2thtml(epub_path):
@@ -119,6 +125,7 @@ def main():
             dirs.remove('output_txt')
         for file in files:
             file_path = os.path.join(root, file)
+            print (f"Processing file: {file_path}")
             if file.endswith('.epub'):
                 processed_count += process_file(file_path, output_directory, processed_files)
                 write_processed_files_info(processed_files_path, processed_files)  # Update the JSON after each file
@@ -133,7 +140,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-    if file.endswith('.epub') or file.endswith('.pdf') or file.endswith('.docx'):
-                processed_count += process_file(file_path, output_directory, processed_files)
