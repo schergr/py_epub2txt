@@ -1,11 +1,9 @@
 import ebooklib
-import logging
 import os
 import json
 import PyPDF2
 
 from zipfile import BadZipFile
-from datetime import datetime
 from ebooklib import epub
 from bs4 import BeautifulSoup
 from docx import Document
@@ -41,7 +39,7 @@ def pdf2text(pdf_path):
 
 def epub2thtml(epub_path):
     try:
-        book = epub.read_epub(epub_path)
+        book = epub.read_epub(epub_path,{"ignore_ncx": True})
         chapters = []
         for item in book.get_items():
             if item.get_type() == ebooklib.ITEM_DOCUMENT:
@@ -86,9 +84,9 @@ def process_file(file_path, output_directory, processed_files):
         return 0
     # Determine the file type and process accordingly
     if file_path.endswith('.epub'):
-        chapters = epub2thtml(file_path)
-        if not chapters:  # Check if chapters list is empty
-            return 0  # Skip further processing
+        #chapters = epub2thtml(file_path)
+        #if not chapters:  # Check if chapters list is empty
+        #    return 0  # Skip further processing
         text_content = epub2text(file_path)
     elif file_path.endswith('.pdf'):
         text_content = pdf2text(file_path)
@@ -102,6 +100,7 @@ def process_file(file_path, output_directory, processed_files):
     output_file_path = os.path.join(output_directory, output_file_name)
 
     with open(output_file_path, 'w', encoding='utf-8') as f:
+        #f.write('\n'.join(text_content))
         f.write(text_content)
     print(f"Processed: {file_path}")
 
