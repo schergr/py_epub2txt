@@ -68,7 +68,7 @@ def docx_to_markdown(docx_path):
     full_text = []
     for para in doc.paragraphs:
         full_text.append(para.text)
-    doc_text = '\n'.join(full_text)
+    doc_ text = '\n'.join(full_text)
     return md(doc_text)
 
 def epub2text(epub_path):
